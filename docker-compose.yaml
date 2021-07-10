@@ -17,6 +17,8 @@ services:
   backend:
     container_name: manabie-be
     image: golang-backend-image
+    volumes:
+      - ./internal:/go/src/app/internal
     environment: 
       DB_PORT: 5432
       DB_HOST: db
