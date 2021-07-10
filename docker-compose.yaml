@@ -3,7 +3,7 @@ version: "3.7"
 services: 
   db:
     container_name: manabie_db
-    image: postgres
+    image: postgres:11
     environment: 
       POSTGRES_USER: manabie_postgres
       POSTGRES_PASSWORD: thisisatest
@@ -12,5 +12,28 @@ services:
       - ./init-db/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql 
     ports: 
       - "5432:5432"
-    
+    networks:
+      - go_network
+  backend:
+    container_name: manabie-be
+    image: golang-backend-image
+    environment: 
+      DB_PORT: 5432
+      DB_HOST: db
+      DB_USER: manabie_postgres
+      DB_PASSWORD: thisisatest
+      DB_NAME: manabie_postgres
+    ports:
+      - "5050:5050"
+    networks: 
+      - go_network
+  redis:
+    container_name: manabie-redis
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks: 
+      - go_network
+networks:
+  go_network:
       

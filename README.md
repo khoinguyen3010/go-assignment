@@ -37,3 +37,10 @@ CREATE TABLE tasks (
 
 ### Sequence diagram
 ![auth and create tasks request](https://github.com/manabie-com/togo/blob/master/docs/sequence.svg)
+
+
+
+### How to run
+- run `make build` to create local docker image for backend.
+- `make run-logs` to run project with seeing the logs in the terminal console.
+- `make run-no-logs` to run project in detached docker mode.
