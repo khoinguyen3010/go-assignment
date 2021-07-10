@@ -3,16 +3,14 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
-
-	// "log"
 	"net/http"
 	"os"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	middleware "github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 	_ "github.com/lib/pq"
-	// "github.con/labstack/gommon/log"
 )
 
 func main() {
@@ -25,13 +23,11 @@ func main() {
 	db_user := os.Getenv("DB_USER")
 	db_password := os.Getenv("DB_PASSWORD")
 	db_name := os.Getenv("DB_NAME")
-
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", db_host, db_port, db_user, db_password, db_name)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal("Cannot connect to Postgres database", err)
 	}
-
 	if err := db.Ping(); err != nil {
 		panic(err)
 	} else {
@@ -39,11 +35,19 @@ func main() {
 	}
 
 	// Serve and listen for backend application
-	e := echo.New()
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, world!")
+	app := echo.New()
+
+	// Middlewares
+	app.Use(middleware.Logger())
+	app.Use(middleware.Recover())
+
+	// Routes
+	app.GET("/", func(ctx echo.Context) error {
+		return ctx.String(http.StatusOK, "Hello, world!")
 	})
-	e.Logger.Fatal(e.Start(":5050"))
+
+	// Run application
+	app.Logger.Fatal(app.Start(":5050"))
 
 	// http.ListenAndServe(":5050", &services.ToDoService{
 	// 	JWTKey: "wqGyEBBfPK9w3Lxw",

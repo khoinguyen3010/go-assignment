@@ -12,7 +12,7 @@ init:
 be-bash:
 	docker exec -it manabie-be bash
 
-run-logs:
+run:
 	docker compose up
 run-no-logs:
 	docker compose up -d
