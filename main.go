@@ -4,13 +4,15 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+
+	// "log"
 	"net/http"
 	"os"
 	"strconv"
 
-	"github.com/khoinguyen3010/go-assignment/internal/services"
-	postgres "github.com/khoinguyen3010/go-assignment/internal/storages/postgres"
+	"github.com/labstack/echo/v4"
 	_ "github.com/lib/pq"
+	// "github.con/labstack/gommon/log"
 )
 
 func main() {
@@ -30,11 +32,23 @@ func main() {
 		log.Fatal("Cannot connect to Postgres database", err)
 	}
 
+	if err := db.Ping(); err != nil {
+		panic(err)
+	} else {
+		fmt.Println("Postgres DB connected...")
+	}
+
 	// Serve and listen for backend application
-	http.ListenAndServe(":5050", &services.ToDoService{
-		JWTKey: "wqGyEBBfPK9w3Lxw",
-		Store: &postgres.Postgres{
-			DB: db,
-		},
+	e := echo.New()
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, world!")
 	})
+	e.Logger.Fatal(e.Start(":5050"))
+
+	// http.ListenAndServe(":5050", &services.ToDoService{
+	// 	JWTKey: "wqGyEBBfPK9w3Lxw",
+	// 	Store: &postgres.Postgres{
+	// 		DB: db,
+	// 	},
+	// })
 }

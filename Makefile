@@ -1,11 +1,11 @@
 build:
 	docker build -t golang-backend-image .
 
-prune-all:
+clean:
 	docker system prune --force
 	docker image prune --force
 
-init-proj:
+init:
 	docker build -t golang-backend-image .
 	docker compose up
 
