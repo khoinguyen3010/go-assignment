@@ -19,6 +19,9 @@ services:
     image: golang-backend-image
     volumes:
       - ./internal:/go/src/app/internal
+      - ./router:/go/src/app/router
+      - ./models:/go/src/app/models
+      - ./main.go:/go/src/app/main.go
     environment: 
       DB_PORT: 5432
       DB_HOST: db
