@@ -7,16 +7,10 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/khoinguyen3010/go-assignment/authentication"
 	"github.com/labstack/echo/v4"
 	middleware "github.com/labstack/echo/v4/middleware"
 )
-
-type jwtCustomClaims struct {
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-	Admin bool   `json:"admin"`
-	jwt.StandardClaims
-}
 
 func New() *echo.Echo {
 	app := echo.New()
@@ -28,7 +22,7 @@ func New() *echo.Echo {
 	}
 	jwtConfig := middleware.JWTConfig{
 		SigningKey:    []byte(os.Getenv("JWT_SECRET")),
-		Claims:        &jwtCustomClaims{},
+		Claims:        &authentication.JwtCustomClaims{},
 		AuthScheme:    "Bearer",
 		SigningMethod: middleware.AlgorithmHS256,
 		TokenLookup:   "header:" + echo.HeaderAuthorization,
@@ -63,7 +57,7 @@ func hello(ctx echo.Context) error {
 
 func restricted(ctx echo.Context) error {
 	user := ctx.Get("user").(*jwt.Token)
-	claims := user.Claims.(*jwtCustomClaims)
+	claims := user.Claims.(*authentication.JwtCustomClaims)
 	name := claims.Name
 	var res struct {
 		Message string `json:"message"`
@@ -81,7 +75,7 @@ func login(ctx echo.Context) error {
 		return echo.ErrUnauthorized
 	}
 
-	claims := &jwtCustomClaims{
+	claims := &authentication.JwtCustomClaims{
 		Name:  "Khoi Nguyen",
 		UUID:  "9E98C454-C7AC-4330-B2EF-983765E00547",
 		Admin: true,
