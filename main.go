@@ -98,6 +98,7 @@ type jwtCustomClaims struct {
 func login(ctx echo.Context) error {
 	username := ctx.FormValue("username")
 	password := ctx.FormValue("password")
+	secret := os.Getenv("JWT_SECRET")
 
 	if username != "Khoi Nguyen" || password != "Minh@nh0806" {
 		return echo.ErrUnauthorized
@@ -111,10 +112,8 @@ func login(ctx echo.Context) error {
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 		},
 	}
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	secret := os.Getenv("JWT_SECRET")
 	t, err := token.SignedString([]byte(secret))
 	if err != nil {
 		fmt.Println(err)
