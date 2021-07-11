@@ -1,5 +1,5 @@
 build:
-	docker build -t golang-backend-image .
+	docker build -t golang-backend-image:latest .
 
 clean:
 	docker system prune --force
