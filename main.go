@@ -21,8 +21,11 @@ func main() {
 	app := echo.New()
 	rapp := app.Group("/restricted")
 	jwtConfig := middleware.JWTConfig{
-		SigningKey: []byte(os.Getenv("JWT_SECRET")),
-		Claims:     &jwtCustomClaims{},
+		SigningKey:    []byte(os.Getenv("JWT_SECRET")),
+		Claims:        &jwtCustomClaims{},
+		AuthScheme:    "Bearer",
+		SigningMethod: middleware.AlgorithmHS256,
+		TokenLookup:   "header:" + echo.HeaderAuthorization,
 	}
 
 	// Connect with Postgres database
