@@ -15,7 +15,7 @@ type User struct {
 	Username       string    `json:"username" form:"username"`
 	Password       string    `json:"password" form:"password"`
 	HashedPassword string    `json:"hashed_password" form:"hashed_password"`
-	DateofBirth    time.Time `json:"date_of_birth" form:"date_of_birth"`
+	DateOfBirth    time.Time `json:"date_of_birth" form:"date_of_birth"`
 	MaxTodo        int       `json:"max_todo" form:"max_todo"`
 }
 
