@@ -70,7 +70,7 @@ func SignUp(ctx echo.Context) error {
 		Lastname:       signUpForm.Lastname,
 		Email:          signUpForm.Email,
 		HashedPassword: hashed_password,
-		BaseObject: models.BaseObject{
+		BaseResponse: models.BaseResponse{
 			CreatedAt: created_time,
 			UpdatedAt: created_time,
 			CreatedBy: current_user,

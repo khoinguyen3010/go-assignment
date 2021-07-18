@@ -1,9 +1,13 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type User struct {
-	ID             string    `json:"id"`
+	gorm.Model
 	Firstname      string    `json:"first_name" form:"first_name"`
 	Lastname       string    `json:"last_name" form:"last_name"`
 	Alias          string    `json:"alias" form:"alias"`
@@ -12,7 +16,7 @@ type User struct {
 	Password       string    `json:"password" form:"password"`
 	HashedPassword string    `json:"hashed_password" form:"hashed_password"`
 	DateofBirth    time.Time `json:"date_of_birth" form:"date_of_birth"`
-	BaseObject
+	MaxTodo        int       `json:"max_todo" form:"max_todo"`
 }
 
 type UserSignUpForm struct {
@@ -35,7 +39,7 @@ type UserSignupResponse struct {
 	Lastname       string `json:"last_name"`
 	Email          string `json:"email"`
 	HashedPassword string `json:"hashed_password"`
-	BaseObject
+	BaseResponse
 }
 
 type UserLoginResponse struct {

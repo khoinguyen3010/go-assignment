@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/khoinguyen3010/go-assignment/models"
 	"github.com/khoinguyen3010/go-assignment/router"
 	"github.com/labstack/gommon/log"
 	_ "github.com/lib/pq"
@@ -41,6 +42,12 @@ func main() {
 			log.Info("Postgres DB connected...")
 		}
 	}
+
+	// Migration
+	db.AutoMigrate(
+		&models.User{},
+		&models.Task{},
+	)
 
 	// Run and Serve Application
 	app.Logger.Fatal(app.Start(":5050"))

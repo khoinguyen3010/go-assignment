@@ -1,10 +1,8 @@
 package models
 
-import (
-	"time"
-)
+import "time"
 
-type BaseObject struct {
+type BaseResponse struct {
 	CreatedAt time.Time `json:"created_at" form:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" form:"updated_at"`
 	CreatedBy string    `json:"created_by" form:"created_by"`
