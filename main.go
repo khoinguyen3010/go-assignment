@@ -45,3 +45,5 @@ func main() {
 	// Run and Serve Application
 	app.Logger.Fatal(app.Start(":5050"))
 }
+
+// Routes call handler -> handler call struct method -> call orm to handle
