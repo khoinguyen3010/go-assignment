@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/khoinguyen3010/go-assignment/authentication"
+	"github.com/khoinguyen3010/go-assignment/models"
 	"github.com/labstack/echo/v4"
 	middleware "github.com/labstack/echo/v4/middleware"
 )
@@ -19,7 +20,7 @@ func New() *echo.Echo {
 	}
 	jwtConfig := middleware.JWTConfig{
 		SigningKey:    []byte(os.Getenv("JWT_SECRET")),
-		Claims:        &authentication.JwtCustomClaims{},
+		Claims:        &models.JwtCustomClaims{},
 		AuthScheme:    "Bearer",
 		SigningMethod: middleware.AlgorithmHS256,
 		TokenLookup:   "header:" + echo.HeaderAuthorization,

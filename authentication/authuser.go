@@ -1,38 +1,15 @@
 package authentication
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/khoinguyen3010/go-assignment/models"
 	"github.com/khoinguyen3010/go-assignment/utils"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 )
-
-type JwtCustomClaims struct {
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-	Admin bool   `json:"admin"`
-	jwt.StandardClaims
-}
-
-type User struct {
-	ID        string    `json:"id"`
-	Email     string    `json:"email"`
-	Username  string    `json:"username"`
-	Password  string    `json:"password"`
-	Firstname string    `json:"first_name"`
-	Lastname  string    `json:"last_name"`
-	DoB       time.Time `json:"date_of_birth"`
-}
-
-type UserLoginForm struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
 
 func Login(ctx echo.Context) error {
 	username := ctx.FormValue("username")
@@ -44,7 +21,7 @@ func Login(ctx echo.Context) error {
 		return echo.ErrUnauthorized
 	}
 
-	claims := &JwtCustomClaims{
+	claims := &models.JwtCustomClaims{
 		Name:  "Khoi Nguyen",
 		UUID:  "9E98C454-C7AC-4330-B2EF-983765E00547",
 		Admin: true,
@@ -56,47 +33,49 @@ func Login(ctx echo.Context) error {
 
 	t, err := token.SignedString([]byte(secret))
 	if err != nil {
-		log.Error(err)
-		return err
+		return ctx.JSON(http.StatusInternalServerError, err)
 	}
-
-	return ctx.JSON(http.StatusOK, map[string]string{"token": t})
+	return ctx.JSON(http.StatusOK, &models.UserLoginResponse{Token: t})
 }
 
 func Restricted(ctx echo.Context) error {
 	user := ctx.Get("user").(*jwt.Token)
-	claims := user.Claims.(*JwtCustomClaims)
+	claims := user.Claims.(*models.JwtCustomClaims)
 	name := claims.Name
-	var res struct {
-		Message string `json:"message"`
-	}
-	res.Message = "Restricted success! Welcome " + name
-	return ctx.JSON(http.StatusOK, res)
+	return ctx.JSON(http.StatusOK, &models.BaseSuccessResponse{Message: "Restricted success! Welcome " + name})
 }
 
 func Index(ctx echo.Context) error {
-	var res struct {
-		Message string `json:"message"`
-	}
-	res.Message = "Hello, world!"
-	return ctx.JSON(http.StatusOK, res)
+	return ctx.JSON(http.StatusOK, &models.BaseSuccessResponse{Message: "Hello, world!"})
 }
 
 func SignUp(ctx echo.Context) error {
-	username := ctx.FormValue("username")
-	password := ctx.FormValue("password")
-	hashed_password, err := utils.HashPassword(password)
+	// Handling inputs: Bind is used to easily bind data from request to struct (form or json)
+	signUpForm := &models.UserSignUpForm{}
+	if err := ctx.Bind(signUpForm); err != nil {
+		return ctx.JSON(http.StatusInternalServerError, err)
+	}
+	hashed_password, err := utils.HashPassword(signUpForm.Password)
 	if err != nil {
-		fmt.Println(err)
+		return ctx.JSON(http.StatusInternalServerError, err)
 	}
 
-	var res struct {
-		Username       string `json:"username"`
-		Password       string `json:"password"`
-		HashedPassword string `json:"hashed_password"`
+	// Business logic
+	created_time := time.Now()
+	current_user := "Ngao" //Todo: change this to get current user from context
+
+	// Returning API's response
+	response := &models.UserSignupResponse{
+		Firstname:      signUpForm.Firstname,
+		Lastname:       signUpForm.Lastname,
+		Email:          signUpForm.Email,
+		HashedPassword: hashed_password,
+		BaseObject: models.BaseObject{
+			CreatedAt: created_time,
+			UpdatedAt: created_time,
+			CreatedBy: current_user,
+			UpdatedBy: current_user,
+		},
 	}
-	res.Username = username
-	res.Password = password
-	res.HashedPassword = hashed_password
-	return ctx.JSON(http.StatusOK, res)
+	return ctx.JSON(http.StatusCreated, response)
 }
