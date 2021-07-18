@@ -1,11 +1,13 @@
 package authentication
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/khoinguyen3010/go-assignment/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
@@ -80,18 +82,21 @@ func Index(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, res)
 }
 
-// func (user *User) login(ctx echo.Context) error {
+func SignUp(ctx echo.Context) error {
+	username := ctx.FormValue("username")
+	password := ctx.FormValue("password")
+	hashed_password, err := utils.HashPassword(password)
+	if err != nil {
+		fmt.Println(err)
+	}
 
-// }
-
-// func (user *User) create(ctx echo.Context) error {
-
-// }
-
-// func (user *User) update(ctx echo.Context) error {
-
-// }
-
-// func (user *User) get(ctx echo.Context) error {
-
-// }
+	var res struct {
+		Username       string `json:"username"`
+		Password       string `json:"password"`
+		HashedPassword string `json:"hashed_password"`
+	}
+	res.Username = username
+	res.Password = password
+	res.HashedPassword = hashed_password
+	return ctx.JSON(http.StatusOK, res)
+}

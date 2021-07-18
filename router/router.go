@@ -38,6 +38,7 @@ func New() *echo.Echo {
 
 	// Routes
 	app.GET("/", authentication.Index)
+	app.POST("/signup", authentication.SignUp)
 	app.POST("/login", authentication.Login)
 	rapp.GET("", authentication.Restricted)
 
