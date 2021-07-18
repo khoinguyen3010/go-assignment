@@ -29,6 +29,8 @@ services:
       DB_PASSWORD: thisisatest
       DB_NAME: manabie_postgres
       JWT_SECRET: wqGyEBBfPK9w3Lxw
+    depends_on: 
+      - db
     ports:
       - "5050:5050"
     networks: 
